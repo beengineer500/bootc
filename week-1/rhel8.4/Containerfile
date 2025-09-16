@@ -1,0 +1,42 @@
+ARG BASE=
+
+FROM ${BASE}
+
+LABEL containers.bootc=1
+
+# See https://docs.fedoraproject.org/en-US/bootc/home-directories
+RUN mkdir -p /var/roothome
+
+# Make directory for Local repo
+RUN mkdir -p /iso
+
+# Copy Basic Packages
+COPY /iso/* /iso/
+
+# Define local.repo
+RUN cat <<EOF > /etc/yum.repos.d/local.repo
+[AppStream]
+name=AppStream
+baseurl=file:///iso/AppStream
+gpgcheck=0
+enabled=1
+
+[BaseOS]
+name=BaseOS
+baseurl=file:///iso/BaseOS
+gpgcheck=0
+enabled=1
+EOF
+
+RUN dnf repolist && dnf list
+
+RUN dnf install -y \
+    @core \
+    pciutils dmidecode lshw \
+    net-tools ethtool \
+    sysstat \
+    podman \
+    git gcc make tree tar unzip \
+    jq curl wget rsync bash-completion \
+    && dnf clean all && rm -rf /var/cache/dnf
+  
