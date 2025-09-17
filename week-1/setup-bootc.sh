@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-PKGS='podman bootc'
+PKGS='podman bootc osbuild-selinux'
 
 echo '##### This is setup-bootc.sh! #####'
 
